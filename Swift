@@ -6,6 +6,7 @@ local TweenService = game:GetService("TweenService")
 -- Configuration
 Swift.KeyURL = "https://pastebin.com/raw/UEd0yn0W"  -- Change this
 Swift.CorrectKey = nil  -- Fetched from Pastebin
+Swift.TestKey = "Swift01" 
 
 -- Fetch Key from Pastebin
 function Swift:FetchKey()
@@ -46,7 +47,7 @@ function Swift:CreateUI()
 
     -- Confirm Key Function
     ConfirmButton.MouseButton1Click:Connect(function()
-        if KeyInput.Text == Swift.CorrectKey then
+        if KeyInput.Text == Swift.CorrectKey or inputKey == Swift.TestKey then
             print("Key Validated! Unlocking UI...")
             MainFrame:Destroy()
         else
