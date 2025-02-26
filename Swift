@@ -1,0 +1,112 @@
+local Swift = {}
+local UIS = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+
+-- Configuration
+Swift.KeyURL = "https://pastebin.com/raw/YOUR_PASTEBIN_KEY_HERE"  -- Change this
+Swift.CorrectKey = nil  -- Fetched from Pastebin
+
+-- Fetch Key from Pastebin
+function Swift:FetchKey()
+    local success, response = pcall(function()
+        return game:HttpGet(Swift.KeyURL, true)
+    end)
+    if success then
+        Swift.CorrectKey = response
+    else
+        warn("Failed to fetch key")
+    end
+end
+
+-- UI Elements
+function Swift:CreateUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    local MainFrame = Instance.new("Frame")
+    local KeyInput = Instance.new("TextBox")
+    local ConfirmButton = Instance.new("TextButton")
+
+    -- UI Properties
+    ScreenGui.Parent = game.CoreGui
+    MainFrame.Size = UDim2.new(0, 300, 0, 200)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    MainFrame.Parent = ScreenGui
+
+    KeyInput.Size = UDim2.new(0.8, 0, 0.2, 0)
+    KeyInput.Position = UDim2.new(0.1, 0, 0.4, 0)
+    KeyInput.PlaceholderText = "Enter Key"
+    KeyInput.Parent = MainFrame
+
+    ConfirmButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+    ConfirmButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+    ConfirmButton.Text = "Submit Key"
+    ConfirmButton.BackgroundColor3 = Color3.fromRGB(50, 150, 250)
+    ConfirmButton.Parent = MainFrame
+
+    -- Confirm Key Function
+    ConfirmButton.MouseButton1Click:Connect(function()
+        if KeyInput.Text == Swift.CorrectKey then
+            print("Key Validated! Unlocking UI...")
+            MainFrame:Destroy()
+        else
+            KeyInput.Text = "Invalid Key!"
+        end
+    end)
+
+    -- Smooth Appear Animation
+    MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    local tween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 200)})
+    tween:Play()
+end
+
+-- Dropdown Component
+function Swift:CreateDropdown(parent, options, callback)
+    local Dropdown = Instance.new("Frame")
+    local Button = Instance.new("TextButton")
+    local OptionList = Instance.new("Frame")
+
+    Dropdown.Size = UDim2.new(0, 150, 0, 30)
+    Dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Dropdown.Parent = parent
+
+    Button.Size = UDim2.new(1, 0, 1, 0)
+    Button.Text = "Select Option"
+    Button.Parent = Dropdown
+
+    OptionList.Size = UDim2.new(1, 0, 0, 0)
+    OptionList.Position = UDim2.new(0, 0, 1, 0)
+    OptionList.BackgroundTransparency = 1
+    OptionList.Parent = Dropdown
+
+    local expanded = false
+    Button.MouseButton1Click:Connect(function()
+        if expanded then
+            OptionList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.3, true)
+        else
+            OptionList:TweenSize(UDim2.new(1, 0, 0, #options * 30), "Out", "Quad", 0.3, true)
+        end
+        expanded = not expanded
+    end)
+
+    for _, option in ipairs(options) do
+        local OptionButton = Instance.new("TextButton")
+        OptionButton.Size = UDim2.new(1, 0, 0, 30)
+        OptionButton.Text = option
+        OptionButton.Parent = OptionList
+        OptionButton.MouseButton1Click:Connect(function()
+            Button.Text = option
+            callback(option)
+            OptionList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.3, true)
+            expanded = false
+        end)
+    end
+end
+
+-- Initialize UI
+function Swift:Init()
+    Swift:FetchKey()
+    Swift:CreateUI()
+end
+
+return Swift
