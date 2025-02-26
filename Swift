@@ -4,7 +4,7 @@ local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 
 -- Configuration
-Swift.KeyURL = "https://pastebin.com/raw/YOUR_PASTEBIN_KEY_HERE"  -- Change this
+Swift.KeyURL = "https://pastebin.com/raw/UEd0yn0W"  -- Change this
 Swift.CorrectKey = nil  -- Fetched from Pastebin
 
 -- Fetch Key from Pastebin
