@@ -1,4 +1,4 @@
--- SwiftUILIB (Advanced UI Redesign v4.1 with Darkrai Styling + Transitions + Toggle)
+-- SwiftUILIB (Advanced UI Redesign v4.2 with Flip Animation & Layout Fixes)
 -- Author: XylorPrograms
 
 local Swift = {}
@@ -67,7 +67,7 @@ function Swift:CreateWindow(title)
     gui.ResetOnSpawn = false
 
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 0, 0, 0)
+    main.Size = UDim2.new(0, 656, 0, 400)
     main.Position = UDim2.new(0.5, 0, 0.5, 0)
     main.AnchorPoint = Vector2.new(0.5, 0.5)
     main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
@@ -75,6 +75,7 @@ function Swift:CreateWindow(title)
     roundify(main, 10)
     addStroke(main)
 
+    main.Size = UDim2.new(0, 0, 0, 0)
     main:TweenSize(UDim2.new(0, 656, 0, 400), "Out", "Quad", 0.4, true)
 
     local header = Instance.new("Frame")
@@ -96,11 +97,14 @@ function Swift:CreateWindow(title)
 
     makeDraggable(header, main)
 
-    local sidebar = Instance.new("Frame")
+    local sidebar = Instance.new("ScrollingFrame")
     sidebar.Size = UDim2.new(0, 150, 1, -30)
     sidebar.Position = UDim2.new(0, 0, 0, 30)
     sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     sidebar.Parent = main
+    sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+    sidebar.ScrollBarThickness = 4
+    sidebar.ClipsDescendants = true
     roundify(sidebar, 8)
     addStroke(sidebar)
 
@@ -126,35 +130,23 @@ function Swift:CreateWindow(title)
     layout.EasingStyle = Enum.EasingStyle.Quad
     layout.EasingDirection = Enum.EasingDirection.InOut
     layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.Padding = UDim.new(0, 6)
     layout.TweenTime = 0.4
 
     local activeTab
 
-    local function hideUI()
-        TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 0, 0, 0)
-        }):Play()
-        wait(0.3)
-        gui.Enabled = false
-    end
-
-    local function showUI()
-        gui.Enabled = true
-        TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
-            Size = UDim2.new(0, 656, 0, 400)
-        }):Play()
-    end
-
-    UIS.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.RightControl then
-            if gui.Enabled then
-                hideUI()
-            else
-                showUI()
-            end
+    function UI:Toggle()
+        if main.Visible then
+            TweenService:Create(main, TweenInfo.new(0.4), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+            task.wait(0.4)
+            main.Visible = false
+        else
+            main.Visible = true
+            main.Size = UDim2.new(0, 0, 0, 0)
+            TweenService:Create(main, TweenInfo.new(0.4), {Size = UDim2.new(0, 656, 0, 400)}):Play()
         end
-    end)
+    end
 
     function UI:Tab(name)
         local button = Instance.new("TextButton")
@@ -180,6 +172,11 @@ function Swift:CreateWindow(title)
         list.Parent = page
         list.SortOrder = Enum.SortOrder.LayoutOrder
         list.Padding = UDim.new(0, 10)
+
+        game:GetService("RunService").RenderStepped:Connect(function()
+            page.CanvasSize = UDim2.new(0, 0, 0, list.AbsoluteContentSize.Y + 10)
+            sidebar.CanvasSize = UDim2.new(0, 0, 0, sidebarLayout.AbsoluteContentSize.Y + 10)
+        end)
 
         button.MouseButton1Click:Connect(function()
             layout:JumpTo(page)
