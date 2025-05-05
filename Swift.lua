@@ -1,4 +1,4 @@
--- SwiftUILIB (Advanced UI Redesign v4.1 with Darkrai Styling)
+-- SwiftUILIB (Advanced UI Redesign v4.1 with Darkrai Styling + Transitions + Toggle)
 -- Author: XylorPrograms
 
 local Swift = {}
@@ -67,7 +67,7 @@ function Swift:CreateWindow(title)
     gui.ResetOnSpawn = false
 
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 656, 0, 400)
+    main.Size = UDim2.new(0, 0, 0, 0)
     main.Position = UDim2.new(0.5, 0, 0.5, 0)
     main.AnchorPoint = Vector2.new(0.5, 0.5)
     main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
@@ -75,7 +75,6 @@ function Swift:CreateWindow(title)
     roundify(main, 10)
     addStroke(main)
 
-    main.Size = UDim2.new(0, 0, 0, 0)
     main:TweenSize(UDim2.new(0, 656, 0, 400), "Out", "Quad", 0.4, true)
 
     local header = Instance.new("Frame")
@@ -131,6 +130,31 @@ function Swift:CreateWindow(title)
     layout.TweenTime = 0.4
 
     local activeTab
+
+    local function hideUI()
+        TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+            Size = UDim2.new(0, 0, 0, 0)
+        }):Play()
+        wait(0.3)
+        gui.Enabled = false
+    end
+
+    local function showUI()
+        gui.Enabled = true
+        TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+            Size = UDim2.new(0, 656, 0, 400)
+        }):Play()
+    end
+
+    UIS.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.RightControl then
+            if gui.Enabled then
+                hideUI()
+            else
+                showUI()
+            end
+        end
+    end)
 
     function UI:Tab(name)
         local button = Instance.new("TextButton")
