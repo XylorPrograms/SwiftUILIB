@@ -1,12 +1,13 @@
--- SwiftUILIB v4.0 (Darkrai-Inspired Full Redesign)
+-- SwiftUILIB (Advanced UI Redesign v4.1 with Darkrai Styling)
 -- Author: XylorPrograms
--- Structure: Modular, polished, and expandable
 
 local Swift = {}
 
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local UIS = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
 local function roundify(obj, radius)
     local corner = Instance.new("UICorner")
@@ -18,9 +19,43 @@ local function addStroke(obj, color)
     local stroke = Instance.new("UIStroke")
     stroke.Thickness = 1
     stroke.Color = color or Color3.fromRGB(50, 50, 50)
-    stroke.Transparency = 0.3
+    stroke.Transparency = 0.4
     stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     stroke.Parent = obj
+end
+
+local function makeDraggable(topbar, target)
+    local dragging, dragInput, dragStart, startPos
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        TweenService:Create(target, TweenInfo.new(0.15), {Position = newPos}):Play()
+    end
+
+    topbar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = target.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+
+    topbar.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
 end
 
 function Swift:CreateWindow(title)
@@ -32,130 +67,131 @@ function Swift:CreateWindow(title)
     gui.ResetOnSpawn = false
 
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 680, 0, 430)
-    main.Position = UDim2.new(0.5, -340, 0.5, -215)
-    main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    main.BorderSizePixel = 0
-    main.ClipsDescendants = true
-    main.Active = true
-    main.Draggable = true
+    main.Size = UDim2.new(0, 656, 0, 400)
+    main.Position = UDim2.new(0.5, 0, 0.5, 0)
+    main.AnchorPoint = Vector2.new(0.5, 0.5)
+    main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     main.Parent = gui
-    roundify(main, 12)
+    roundify(main, 10)
     addStroke(main)
 
-    local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, 0, 0, 36)
-    header.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-    header.Text = title or "SwiftUILIB"
-    header.TextColor3 = Color3.fromRGB(255, 255, 255)
-    header.Font = Enum.Font.GothamBold
-    header.TextSize = 17
-    header.TextXAlignment = Enum.TextXAlignment.Left
-    header.BorderSizePixel = 0
+    main.Size = UDim2.new(0, 0, 0, 0)
+    main:TweenSize(UDim2.new(0, 656, 0, 400), "Out", "Quad", 0.4, true)
+
+    local header = Instance.new("Frame")
+    header.Size = UDim2.new(1, 0, 0, 30)
+    header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     header.Parent = main
-    roundify(header, 12)
-    addStroke(header)
+    roundify(header, 8)
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Text = title or "SwiftUILIB"
+    titleLabel.TextColor3 = Color3.fromRGB(147, 112, 219)
+    titleLabel.Font = Enum.Font.GothamSemibold
+    titleLabel.TextSize = 16
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Position = UDim2.new(0, 10, 0, 0)
+    titleLabel.Size = UDim2.new(0, 300, 1, 0)
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = header
+
+    makeDraggable(header, main)
 
     local sidebar = Instance.new("Frame")
-    sidebar.Size = UDim2.new(0, 140, 1, -36)
-    sidebar.Position = UDim2.new(0, 0, 0, 36)
-    sidebar.BackgroundColor3 = Color3.fromRGB(24, 24, 26)
-    sidebar.BorderSizePixel = 0
+    sidebar.Size = UDim2.new(0, 150, 1, -30)
+    sidebar.Position = UDim2.new(0, 0, 0, 30)
+    sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     sidebar.Parent = main
-    roundify(sidebar, 10)
-
-    local tabContainer = Instance.new("Frame")
-    tabContainer.Size = UDim2.new(1, -140, 1, -36)
-    tabContainer.Position = UDim2.new(0, 140, 0, 36)
-    tabContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 38)
-    tabContainer.BorderSizePixel = 0
-    tabContainer.Parent = main
-    roundify(tabContainer, 10)
+    roundify(sidebar, 8)
+    addStroke(sidebar)
 
     local sidebarLayout = Instance.new("UIListLayout")
-    sidebarLayout.Parent = sidebar
     sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     sidebarLayout.Padding = UDim.new(0, 6)
+    sidebarLayout.Parent = sidebar
 
-    local tabs = {}
-    local currentTab = nil
+    local content = Instance.new("Frame")
+    content.Size = UDim2.new(1, -150, 1, -30)
+    content.Position = UDim2.new(0, 150, 0, 30)
+    content.BackgroundColor3 = Color3.fromRGB(38, 38, 40)
+    content.Parent = main
+    roundify(content, 8)
+    addStroke(content)
+
+    local pages = Instance.new("Folder")
+    pages.Name = "Pages"
+    pages.Parent = content
+
+    local layout = Instance.new("UIPageLayout")
+    layout.Parent = pages
+    layout.EasingStyle = Enum.EasingStyle.Quad
+    layout.EasingDirection = Enum.EasingDirection.InOut
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 6)
+    layout.TweenTime = 0.4
+
+    local activeTab
 
     function UI:Tab(name)
-        local tabButton = Instance.new("TextButton")
-        tabButton.Size = UDim2.new(1, -10, 0, 38)
-        tabButton.Text = name
-        tabButton.Font = Enum.Font.Gotham
-        tabButton.TextSize = 14
-        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tabButton.BackgroundColor3 = Color3.fromRGB(28, 28, 30)
-        tabButton.BorderSizePixel = 0
-        tabButton.Parent = sidebar
-        roundify(tabButton, 8)
-        addStroke(tabButton)
+        local button = Instance.new("TextButton")
+        button.Text = name
+        button.Font = Enum.Font.GothamSemibold
+        button.TextSize = 14
+        button.TextColor3 = Color3.fromRGB(220, 220, 220)
+        button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        button.Size = UDim2.new(1, -12, 0, 32)
+        button.Parent = sidebar
+        roundify(button, 6)
 
-        local contentFrame = Instance.new("ScrollingFrame")
-        contentFrame.Size = UDim2.new(1, 0, 1, 0)
-        contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-        contentFrame.ScrollBarThickness = 6
-        contentFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 38)
-        contentFrame.BorderSizePixel = 0
-        contentFrame.Visible = false
-        contentFrame.Parent = tabContainer
-        roundify(contentFrame, 10)
+        local page = Instance.new("ScrollingFrame")
+        page.Name = name
+        page.Size = UDim2.new(1, 0, 1, 0)
+        page.CanvasSize = UDim2.new(0, 0, 0, 0)
+        page.BackgroundTransparency = 1
+        page.ScrollBarThickness = 6
+        page.ScrollingDirection = Enum.ScrollingDirection.Y
+        page.Parent = pages
 
-        local layout = Instance.new("UIListLayout")
-        layout.Parent = contentFrame
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Padding = UDim.new(0, 10)
+        local list = Instance.new("UIListLayout")
+        list.Parent = page
+        list.SortOrder = Enum.SortOrder.LayoutOrder
+        list.Padding = UDim.new(0, 10)
 
-        tabs[name] = contentFrame
-
-        tabButton.MouseButton1Click:Connect(function()
-            if currentTab then
-                currentTab.Visible = false
+        button.MouseButton1Click:Connect(function()
+            layout:JumpTo(page)
+            if activeTab then
+                TweenService:Create(activeTab, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
             end
-            for _, btn in ipairs(sidebar:GetChildren()) do
-                if btn:IsA("TextButton") then
-                    TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(28, 28, 30)}):Play()
-                end
-            end
-            TweenService:Create(tabButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 90, 255)}):Play()
-            currentTab = contentFrame
-            currentTab.Visible = true
+            TweenService:Create(button, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(147, 112, 219)}):Play()
+            activeTab = button
         end)
 
-        local TabAPI = {}
+        local api = {}
 
-        function TabAPI:Button(text, callback)
-            local button = Instance.new("TextButton")
-            button.Size = UDim2.new(1, -14, 0, 38)
-            button.Text = text
-            button.Font = Enum.Font.Gotham
-            button.TextSize = 14
-            button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            button.BackgroundColor3 = Color3.fromRGB(50, 50, 52)
-            button.BorderSizePixel = 0
-            button.Parent = contentFrame
-            roundify(button, 8)
-            addStroke(button)
+        function api:Button(text, callback)
+            local btn = Instance.new("TextButton")
+            btn.Text = text
+            btn.Font = Enum.Font.Gotham
+            btn.TextSize = 14
+            btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+            btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            btn.Size = UDim2.new(1, -12, 0, 32)
+            btn.Parent = page
+            roundify(btn, 6)
 
-            button.MouseEnter:Connect(function()
-                TweenService:Create(button, TweenInfo.new(0.2), {
-                    BackgroundColor3 = Color3.fromRGB(60, 60, 62)
-                }):Play()
+            btn.MouseEnter:Connect(function()
+                TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
             end)
-            button.MouseLeave:Connect(function()
-                TweenService:Create(button, TweenInfo.new(0.2), {
-                    BackgroundColor3 = Color3.fromRGB(50, 50, 52)
-                }):Play()
+            btn.MouseLeave:Connect(function()
+                TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
             end)
 
-            button.MouseButton1Click:Connect(function()
+            btn.MouseButton1Click:Connect(function()
                 pcall(callback)
             end)
         end
 
-        return TabAPI
+        return api
     end
 
     return UI
