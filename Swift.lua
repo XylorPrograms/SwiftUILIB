@@ -499,6 +499,7 @@ function Swift:CreateWindow(title)
         end
 
     return UI
+end
 
 function Swift:Notify(message, duration)
     duration = duration or 4
@@ -528,6 +529,5 @@ function Swift:Notify(message, duration)
     end)
 end
 
-end
-
 return Swift
+
