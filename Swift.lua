@@ -1,5 +1,5 @@
--- SwiftUILIB (Advanced UI Redesign v4.3 with Fixed Page Visibility and Flip Transitions)
--- Author: XylorPrograms (Patch by ChatGPT)
+-- SwiftUILIB (Advanced UI Redesign v4.4 with 3D Flip Transitions)
+-- Author: XylorPrograms (3D Flip Patch by ChatGPT)
 
 local Swift = {}
 
@@ -132,6 +132,7 @@ function Swift:CreateWindow(title)
     pages.Parent = contentWrapper
 
     local activeTab
+    local activePage
     local pageCount = 0
     local pageRegistry = {}
 
@@ -176,10 +177,26 @@ function Swift:CreateWindow(title)
         end)
 
         button.MouseButton1Click:Connect(function()
-            for _, p in pairs(pageRegistry) do
-                p.Visible = false
+            if activePage and activePage ~= page then
+                TweenService:Create(activePage, TweenInfo.new(0.2), {
+                    Rotation = 90,
+                    Size = UDim2.new(0, 0, 1, 0)
+                }):Play()
+                task.wait(0.2)
+                activePage.Visible = false
+                activePage.Rotation = 0
+                activePage.Size = UDim2.new(1, 0, 1, 0)
             end
+
             page.Visible = true
+            page.Size = UDim2.new(0, 0, 1, 0)
+            page.Rotation = -90
+            TweenService:Create(page, TweenInfo.new(0.2), {
+                Rotation = 0,
+                Size = UDim2.new(1, 0, 1, 0)
+            }):Play()
+            activePage = page
+
             if activeTab then
                 TweenService:Create(activeTab, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
             end
