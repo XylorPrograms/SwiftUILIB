@@ -141,69 +141,81 @@ function Swift:CreateWindow(title)
     local activeTab
     local pageCount = 0
 
-    function UI:Tab(name)
-        local button = Instance.new("TextButton")
-        button.Text = name
-        button.Font = Enum.Font.GothamSemibold
-        button.TextSize = 14
-        button.TextColor3 = Color3.fromRGB(220, 220, 220)
-        button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        button.Size = UDim2.new(1, -12, 0, 32)
-        button.Parent = sidebar
-        roundify(button, 6)
+function UI:Tab(name)
+    local button = Instance.new("TextButton")
+    button.Text = name
+    button.Font = Enum.Font.GothamSemibold
+    button.TextSize = 14
+    button.TextColor3 = Color3.fromRGB(220, 220, 220)
+    button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    button.Size = UDim2.new(1, -12, 0, 32)
+    button.Parent = sidebar
+    roundify(button, 6)
 
-        local page = Instance.new("ScrollingFrame")
-        page.Name = name
-        page.Size = UDim2.new(1, 0, 1, 0)
-        page.CanvasSize = UDim2.new(0, 0, 0, 0)
-        page.BackgroundTransparency = 1
-        page.ScrollBarThickness = 6
-        page.ScrollingDirection = Enum.ScrollingDirection.Y
-        page.LayoutOrder = pageCount
-        page.Parent = pages
-        pageCount += 1
+    local page = Instance.new("ScrollingFrame")
+    page.Name = name
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    page.BackgroundTransparency = 1
+    page.ScrollBarThickness = 6
+    page.ScrollingDirection = Enum.ScrollingDirection.Y
+    page.LayoutOrder = pageCount
+    page.ClipsDescendants = true
+    page.Parent = pages
+    pageCount += 1
 
-        local list = Instance.new("UIListLayout")
-        list.Parent = page
-        list.SortOrder = Enum.SortOrder.LayoutOrder
-        list.Padding = UDim.new(0, 10)
+    local list = Instance.new("UIListLayout")
+    list.Parent = page
+    list.SortOrder = Enum.SortOrder.LayoutOrder
+    list.Padding = UDim.new(0, 10)
 
-        button.MouseButton1Click:Connect(function()
-            layout:JumpTo(page)
-            if activeTab then
-                TweenService:Create(activeTab, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
-            end
-            TweenService:Create(button, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(147, 112, 219)}):Play()
-            activeTab = button
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 12)
+    padding.PaddingRight = UDim.new(0, 12)
+    padding.PaddingTop = UDim.new(0, 12)
+    padding.Parent = page
+
+    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        page.CanvasSize = UDim2.new(0, 0, 0, list.AbsoluteContentSize.Y + 24)
+    end)
+
+    button.MouseButton1Click:Connect(function()
+        layout:JumpTo(page)
+        if activeTab then
+            TweenService:Create(activeTab, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
+        end
+        TweenService:Create(button, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(147, 112, 219)}):Play()
+        activeTab = button
+    end)
+
+    local api = {}
+
+    function api:Button(text, callback)
+        local btn = Instance.new("TextButton")
+        btn.Text = text
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 14
+        btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+        btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        btn.Size = UDim2.new(1, 0, 0, 32)
+        btn.Parent = page
+        roundify(btn, 6)
+
+        btn.MouseEnter:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+        end)
+        btn.MouseLeave:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
         end)
 
-        local api = {}
-
-        function api:Button(text, callback)
-            local btn = Instance.new("TextButton")
-            btn.Text = text
-            btn.Font = Enum.Font.Gotham
-            btn.TextSize = 14
-            btn.TextColor3 = Color3.fromRGB(230, 230, 230)
-            btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            btn.Size = UDim2.new(1, -12, 0, 32)
-            btn.Parent = page
-            roundify(btn, 6)
-
-            btn.MouseEnter:Connect(function()
-                TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-            end)
-            btn.MouseLeave:Connect(function()
-                TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
-            end)
-
-            btn.MouseButton1Click:Connect(function()
-                pcall(callback)
-            end)
-        end
-
-        return api
+        btn.MouseButton1Click:Connect(function()
+            pcall(callback)
+        end)
     end
+
+    return api
+end
+
 
     return UI
 end
