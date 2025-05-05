@@ -498,10 +498,12 @@ function Swift:CreateWindow(title)
             end)
         end
 
-    return UI
-end
+    
 
-function Swift:Notify(message, duration)
+        return api
+    end
+
+    function Swift:Notify(message, duration)
     duration = duration or 4
     local gui = CoreGui:FindFirstChild("SwiftUILIB")
     if not gui then return end
@@ -530,4 +532,3 @@ function Swift:Notify(message, duration)
 end
 
 return Swift
-
