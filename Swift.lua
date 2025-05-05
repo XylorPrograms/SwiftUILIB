@@ -344,7 +344,138 @@ function Swift:CreateWindow(title)
             end)
         end
 
-        return api
+        
+
+function api:Dropdown(text, options, callback)
+            local dropdown = Instance.new("Frame")
+            dropdown.Size = UDim2.new(1, 0, 0, 32)
+            dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            dropdown.Parent = page
+            roundify(dropdown, 6)
+            addStroke(dropdown)
+
+            local selected = Instance.new("TextLabel")
+            selected.Text = text .. ": [None]"
+            selected.Font = Enum.Font.Gotham
+            selected.TextSize = 14
+            selected.TextColor3 = Color3.fromRGB(255, 255, 255)
+            selected.Size = UDim2.new(1, -32, 1, 0)
+            selected.Position = UDim2.new(0, 10, 0, 0)
+            selected.BackgroundTransparency = 1
+            selected.TextXAlignment = Enum.TextXAlignment.Left
+            selected.Parent = dropdown
+
+            local dropButton = Instance.new("TextButton")
+            dropButton.Text = "▼"
+            dropButton.Size = UDim2.new(0, 24, 1, 0)
+            dropButton.Position = UDim2.new(1, -28, 0, 0)
+            dropButton.BackgroundTransparency = 1
+            dropButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            dropButton.Font = Enum.Font.Gotham
+            dropButton.TextSize = 14
+            dropButton.Parent = dropdown
+
+            local list = Instance.new("Frame")
+            list.Visible = false
+            list.Size = UDim2.new(1, 0, 0, #options * 28)
+            list.Position = UDim2.new(0, 0, 1, 0)
+            list.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            list.Parent = dropdown
+            addStroke(list)
+            roundify(list, 6)
+
+            for _, option in ipairs(options) do
+                local btn = Instance.new("TextButton")
+                btn.Text = option
+                btn.Font = Enum.Font.Gotham
+                btn.TextSize = 14
+                btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                btn.Size = UDim2.new(1, 0, 0, 28)
+                btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                btn.Parent = list
+                btn.MouseButton1Click:Connect(function()
+                    selected.Text = text .. ": " .. option
+                    list.Visible = false
+                    callback(option)
+                end
+
+function api:MultiDropdown(text, options, callback)
+            local dropdown = Instance.new("Frame")
+            dropdown.Size = UDim2.new(1, 0, 0, 32)
+            dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            dropdown.Parent = page
+            roundify(dropdown, 6)
+            addStroke(dropdown)
+
+            local selected = {}
+            local display = Instance.new("TextLabel")
+            display.Text = text .. ": [0 selected]"
+            display.Font = Enum.Font.Gotham
+            display.TextSize = 14
+            display.TextColor3 = Color3.fromRGB(255, 255, 255)
+            display.Size = UDim2.new(1, -32, 1, 0)
+            display.Position = UDim2.new(0, 10, 0, 0)
+            display.BackgroundTransparency = 1
+            display.TextXAlignment = Enum.TextXAlignment.Left
+            display.Parent = dropdown
+
+            local dropButton = Instance.new("TextButton")
+            dropButton.Text = "▼"
+            dropButton.Size = UDim2.new(0, 24, 1, 0)
+            dropButton.Position = UDim2.new(1, -28, 0, 0)
+            dropButton.BackgroundTransparency = 1
+            dropButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            dropButton.Font = Enum.Font.Gotham
+            dropButton.TextSize = 14
+            dropButton.Parent = dropdown
+
+            local list = Instance.new("Frame")
+            list.Visible = false
+            list.Size = UDim2.new(1, 0, 0, #options * 28)
+            list.Position = UDim2.new(0, 0, 1, 0)
+            list.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            list.Parent = dropdown
+            addStroke(list)
+            roundify(list, 6)
+
+            for _, option in ipairs(options) do
+                local btn = Instance.new("TextButton")
+                btn.Text = "☐ " .. option
+                btn.Font = Enum.Font.Gotham
+                btn.TextSize = 14
+                btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                btn.Size = UDim2.new(1, 0, 0, 28)
+                btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                btn.Parent = list
+                local selectedFlag = false
+                btn.MouseButton1Click:Connect(function()
+                    selectedFlag = not selectedFlag
+                    if selectedFlag then
+                        table.insert(selected, option)
+                        btn.Text = "☑ " .. option
+                    else
+                        for i, v in ipairs(selected) do
+                            if v == option then table.remove(selected, i) break end
+
+function api:Textbox(placeholder, callback)
+            local box = Instance.new("TextBox")
+            box.Text = ""
+            box.PlaceholderText = placeholder
+            box.Font = Enum.Font.Gotham
+            box.TextSize = 14
+            box.TextColor3 = Color3.fromRGB(255, 255, 255)
+            box.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            box.Size = UDim2.new(1, 0, 0, 32)
+            box.ClearTextOnFocus = false
+            box.Parent = page
+            roundify(box, 6)
+            addStroke(box)
+
+            box.FocusLost:Connect(function(enter)
+                if enter then
+                    callback(box.Text)
+                end
+return api
     end
 
     
@@ -498,12 +629,9 @@ function Swift:CreateWindow(title)
             end)
         end
 
-    
+    return UI
 
-        return api
-    end
-
-    function Swift:Notify(message, duration)
+function Swift:Notify(message, duration)
     duration = duration or 4
     local gui = CoreGui:FindFirstChild("SwiftUILIB")
     if not gui then return end
@@ -529,6 +657,8 @@ function Swift:CreateWindow(title)
         task.wait(0.25)
         toast:Destroy()
     end)
+end
+
 end
 
 return Swift
