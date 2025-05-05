@@ -1,4 +1,4 @@
--- SwiftUILIB (Advanced UI Redesign v4.2 with Flip Animation & Layout Fixes)
+-- SwiftUILIB (Advanced UI Redesign v4.2 with Fixed Page Management and Flip Transitions)
 -- Author: XylorPrograms
 
 local Swift = {}
@@ -61,6 +61,12 @@ end
 function Swift:CreateWindow(title)
     local UI = {}
 
+    for _, gui in ipairs(CoreGui:GetChildren()) do
+        if gui.Name == "SwiftUILIB" then
+            gui:Destroy()
+        end
+    end
+
     local gui = Instance.new("ScreenGui")
     gui.Name = "SwiftUILIB"
     gui.Parent = CoreGui
@@ -97,14 +103,11 @@ function Swift:CreateWindow(title)
 
     makeDraggable(header, main)
 
-    local sidebar = Instance.new("ScrollingFrame")
+    local sidebar = Instance.new("Frame")
     sidebar.Size = UDim2.new(0, 150, 1, -30)
     sidebar.Position = UDim2.new(0, 0, 0, 30)
     sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     sidebar.Parent = main
-    sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
-    sidebar.ScrollBarThickness = 4
-    sidebar.ClipsDescendants = true
     roundify(sidebar, 8)
     addStroke(sidebar)
 
@@ -113,40 +116,30 @@ function Swift:CreateWindow(title)
     sidebarLayout.Padding = UDim.new(0, 6)
     sidebarLayout.Parent = sidebar
 
-    local content = Instance.new("Frame")
-    content.Size = UDim2.new(1, -150, 1, -30)
-    content.Position = UDim2.new(0, 150, 0, 30)
-    content.BackgroundColor3 = Color3.fromRGB(38, 38, 40)
-    content.Parent = main
-    roundify(content, 8)
-    addStroke(content)
+    local contentWrapper = Instance.new("Frame")
+    contentWrapper.Size = UDim2.new(1, -150, 1, -30)
+    contentWrapper.Position = UDim2.new(0, 150, 0, 30)
+    contentWrapper.BackgroundColor3 = Color3.fromRGB(38, 38, 40)
+    contentWrapper.Parent = main
+    roundify(contentWrapper, 8)
+    addStroke(contentWrapper)
 
-    local pages = Instance.new("Folder")
-    pages.Name = "Pages"
-    pages.Parent = content
+    local pages = Instance.new("Frame")
+    pages.Size = UDim2.new(1, 0, 1, 0)
+    pages.BackgroundTransparency = 1
+    pages.Parent = contentWrapper
 
     local layout = Instance.new("UIPageLayout")
     layout.Parent = pages
     layout.EasingStyle = Enum.EasingStyle.Quad
     layout.EasingDirection = Enum.EasingDirection.InOut
     layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.Padding = UDim.new(0, 6)
     layout.TweenTime = 0.4
+    layout.FillDirection = Enum.FillDirection.Horizontal
 
     local activeTab
-
-    function UI:Toggle()
-        if main.Visible then
-            TweenService:Create(main, TweenInfo.new(0.4), {Size = UDim2.new(0, 0, 0, 0)}):Play()
-            task.wait(0.4)
-            main.Visible = false
-        else
-            main.Visible = true
-            main.Size = UDim2.new(0, 0, 0, 0)
-            TweenService:Create(main, TweenInfo.new(0.4), {Size = UDim2.new(0, 656, 0, 400)}):Play()
-        end
-    end
+    local pageCount = 0
 
     function UI:Tab(name)
         local button = Instance.new("TextButton")
@@ -166,17 +159,14 @@ function Swift:CreateWindow(title)
         page.BackgroundTransparency = 1
         page.ScrollBarThickness = 6
         page.ScrollingDirection = Enum.ScrollingDirection.Y
+        page.LayoutOrder = pageCount
         page.Parent = pages
+        pageCount += 1
 
         local list = Instance.new("UIListLayout")
         list.Parent = page
         list.SortOrder = Enum.SortOrder.LayoutOrder
         list.Padding = UDim.new(0, 10)
-
-        game:GetService("RunService").RenderStepped:Connect(function()
-            page.CanvasSize = UDim2.new(0, 0, 0, list.AbsoluteContentSize.Y + 10)
-            sidebar.CanvasSize = UDim2.new(0, 0, 0, sidebarLayout.AbsoluteContentSize.Y + 10)
-        end)
 
         button.MouseButton1Click:Connect(function()
             layout:JumpTo(page)
