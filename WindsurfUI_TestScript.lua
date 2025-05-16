@@ -6,7 +6,7 @@
 ]]
 
 -- Load the WindsurfUI library from GitHub repository
-local WindsurfUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XylorPrograms/SwiftUILIB/main/WindsurfUI.lua"))()
+local WindsurfUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XylorPrograms/SwiftUILIB/main/WindsurfUI_Consolidated.lua"))()
 
 -- Create a window
 local Window = WindsurfUI:CreateWindow({
