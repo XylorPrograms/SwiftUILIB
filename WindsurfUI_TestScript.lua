@@ -5,9 +5,8 @@
     Run this in your exploit to see the UI in action
 ]]
 
--- Load the WindsurfUI library (typically this would be loaded from a URL)
--- For testing locally, we'll just use the loadfile approach
-local WindsurfUI = loadstring(readfile("WindsurfUI.lua"))()
+-- Load the WindsurfUI library from GitHub repository
+local WindsurfUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/XylorPrograms/SwiftUILIB/main/WindsurfUI.lua"))()
 
 -- Create a window
 local Window = WindsurfUI:CreateWindow({
