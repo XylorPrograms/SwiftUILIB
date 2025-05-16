@@ -331,7 +331,7 @@ function WindsurfUI:CreateWindow(config)
         local TabButton = Instance.new("TextButton")
         TabButton.Name = info.Name .. "TabButton"
         TabButton.Size = UDim2.new(0, 120, 0, 32)
-        TabButton.BackgroundColor3 = WindsurfUI.Theme.Background
+        TabButton.BackgroundColor3 = self.Theme.Background
         TabButton.BorderSizePixel = 0
         TabButton.Text = ""
         TabButton.AutoButtonColor = false
@@ -347,7 +347,7 @@ function WindsurfUI:CreateWindow(config)
         TabIcon.Position = UDim2.new(0, 10, 0.5, -9)
         TabIcon.BackgroundTransparency = 1
         TabIcon.Image = info.Icon
-        TabIcon.ImageColor3 = WindsurfUI.Theme.TextColor
+        TabIcon.ImageColor3 = self.Theme.TextColor
         TabIcon.Parent = TabButton
         
         local TabText = Instance.new("TextLabel")
@@ -358,7 +358,7 @@ function WindsurfUI:CreateWindow(config)
         TabText.Text = info.Name
         TabText.Font = Enum.Font.GothamSemibold
         TabText.TextSize = 14
-        TabText.TextColor3 = WindsurfUI.Theme.TextColor
+        TabText.TextColor3 = self.Theme.TextColor
         TabText.TextXAlignment = Enum.TextXAlignment.Left
         TabText.Parent = TabButton
         
@@ -369,7 +369,7 @@ function WindsurfUI:CreateWindow(config)
         TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0
         TabContent.ScrollBarThickness = 2
-        TabContent.ScrollBarImageColor3 = WindsurfUI.Theme.Accent
+        TabContent.ScrollBarImageColor3 = self.Theme.Accent
         TabContent.ScrollingDirection = Enum.ScrollingDirection.Y
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
         TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -397,12 +397,12 @@ function WindsurfUI:CreateWindow(config)
         local function SelectTab()
             -- Deselect all tabs
             for _, otherTab in pairs(window.Tabs) do
-                otherTab.TabButton.BackgroundColor3 = WindsurfUI.Theme.Background
+                otherTab.TabButton.BackgroundColor3 = self.Theme.Background
                 otherTab.TabContent.Visible = false
             end
             
             -- Select this tab
-            TabButton.BackgroundColor3 = WindsurfUI.Theme.Accent
+            TabButton.BackgroundColor3 = self.Theme.Accent
             TabContent.Visible = true
             window.ActiveTab = tab
         end
@@ -429,7 +429,7 @@ function WindsurfUI:CreateWindow(config)
             local Button = Create("Frame")({
                 Name = config.Name .. "_Button",
                 Size = UDim2.new(1, 0, 0, 40),
-                BackgroundColor3 = WindsurfUI.Theme.LightContrast,
+                BackgroundColor3 = self.Theme.LightContrast,
                 BorderSizePixel = 0,
                 Parent = tab.TabContent
             })
@@ -447,7 +447,7 @@ function WindsurfUI:CreateWindow(config)
                 Text = config.Name,
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 14,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = Button
             })
@@ -456,12 +456,12 @@ function WindsurfUI:CreateWindow(config)
                 Name = "ClickButton",
                 Size = UDim2.new(0, 150, 0, 24),
                 Position = UDim2.new(1, -160, 0, 8),
-                BackgroundColor3 = WindsurfUI.Theme.DarkContrast,
+                BackgroundColor3 = self.Theme.DarkContrast,
                 BorderSizePixel = 0,
                 Text = config.Text or "Click",
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 14,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 AutoButtonColor = false,
                 Parent = Button
             })
@@ -474,13 +474,13 @@ function WindsurfUI:CreateWindow(config)
             -- Hover and click effects
             ClickButton.MouseEnter:Connect(function()
                 TweenService:Create(ClickButton, TweenInfo.new(0.2), {
-                    BackgroundColor3 = WindsurfUI.Theme.Accent
+                    BackgroundColor3 = self.Theme.Accent
                 }):Play()
             end)
             
             ClickButton.MouseLeave:Connect(function()
                 TweenService:Create(ClickButton, TweenInfo.new(0.2), {
-                    BackgroundColor3 = WindsurfUI.Theme.DarkContrast
+                    BackgroundColor3 = self.Theme.DarkContrast
                 }):Play()
             end)
             
@@ -519,7 +519,7 @@ function WindsurfUI:CreateWindow(config)
             local Toggle = Create("Frame")({
                 Name = config.Name .. "_Toggle",
                 Size = UDim2.new(1, 0, 0, 40),
-                BackgroundColor3 = WindsurfUI.Theme.LightContrast,
+                BackgroundColor3 = self.Theme.LightContrast,
                 BorderSizePixel = 0,
                 Parent = tab.TabContent
             })
@@ -537,7 +537,7 @@ function WindsurfUI:CreateWindow(config)
                 Text = config.Name,
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 14,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = Toggle
             })
@@ -550,7 +550,7 @@ function WindsurfUI:CreateWindow(config)
                 Text = config.Description or "This is a toggle!",
                 Font = Enum.Font.Gotham,
                 TextSize = 12,
-                TextColor3 = WindsurfUI.Theme.PlaceholderColor,
+                TextColor3 = self.Theme.PlaceholderColor,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = Toggle
             })
@@ -560,7 +560,7 @@ function WindsurfUI:CreateWindow(config)
                 Name = "ToggleOuter",
                 Size = UDim2.new(0, 40, 0, 20),
                 Position = UDim2.new(1, -55, 0, 10),
-                BackgroundColor3 = WindsurfUI.Theme.DarkContrast,
+                BackgroundColor3 = self.Theme.DarkContrast,
                 BorderSizePixel = 0,
                 Parent = Toggle
             })
@@ -574,7 +574,7 @@ function WindsurfUI:CreateWindow(config)
                 Name = "ToggleInner",
                 Size = UDim2.new(0, 16, 0, 16),
                 Position = UDim2.new(0, 2, 0, 2),
-                BackgroundColor3 = WindsurfUI.Theme.TextColor,
+                BackgroundColor3 = self.Theme.TextColor,
                 BorderSizePixel = 0,
                 Parent = ToggleOuter
             })
@@ -587,7 +587,7 @@ function WindsurfUI:CreateWindow(config)
             -- Toggle functionality
             local function UpdateToggle()
                 local pos = element.Value and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
-                local color = element.Value and WindsurfUI.Theme.Accent or WindsurfUI.Theme.DarkContrast
+                local color = element.Value and self.Theme.Accent or self.Theme.DarkContrast
                 
                 TweenService:Create(ToggleOuter, TweenInfo.new(0.2), {
                     BackgroundColor3 = color
@@ -609,7 +609,7 @@ function WindsurfUI:CreateWindow(config)
             
             -- Set default value visual
             if config.Default then
-                ToggleOuter.BackgroundColor3 = WindsurfUI.Theme.Accent
+                ToggleOuter.BackgroundColor3 = self.Theme.Accent
                 ToggleInner.Position = UDim2.new(1, -18, 0, 2)
             end
             
@@ -643,7 +643,7 @@ function WindsurfUI:CreateWindow(config)
             local Slider = Create("Frame")({
                 Name = config.Name .. "_Slider",
                 Size = UDim2.new(1, 0, 0, 50),
-                BackgroundColor3 = WindsurfUI.Theme.LightContrast,
+                BackgroundColor3 = self.Theme.LightContrast,
                 BorderSizePixel = 0,
                 Parent = tab.TabContent
             })
@@ -661,7 +661,7 @@ function WindsurfUI:CreateWindow(config)
                 Text = config.Name,
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 14,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = Slider
             })
@@ -670,12 +670,12 @@ function WindsurfUI:CreateWindow(config)
                 Name = "Value",
                 Size = UDim2.new(0, 50, 0, 20),
                 Position = UDim2.new(1, -60, 0, 5),
-                BackgroundColor3 = WindsurfUI.Theme.DarkContrast,
+                BackgroundColor3 = self.Theme.DarkContrast,
                 BorderSizePixel = 0,
                 Text = tostring(config.Default),
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 12,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 TextWrapped = true,
                 Parent = Slider
             })
@@ -690,7 +690,7 @@ function WindsurfUI:CreateWindow(config)
                 Name = "SliderBar",
                 Size = UDim2.new(1, -20, 0, 6),
                 Position = UDim2.new(0, 10, 0, 35),
-                BackgroundColor3 = WindsurfUI.Theme.DarkContrast,
+                BackgroundColor3 = self.Theme.DarkContrast,
                 BorderSizePixel = 0,
                 Parent = Slider
             })
@@ -703,7 +703,7 @@ function WindsurfUI:CreateWindow(config)
             local SliderFill = Create("Frame")({
                 Name = "SliderFill",
                 Size = UDim2.new(0, 0, 1, 0),
-                BackgroundColor3 = WindsurfUI.Theme.Accent,
+                BackgroundColor3 = self.Theme.Accent,
                 BorderSizePixel = 0,
                 Parent = SliderBar
             })
@@ -717,7 +717,7 @@ function WindsurfUI:CreateWindow(config)
                 Name = "SliderDrag",
                 Size = UDim2.new(0, 12, 0, 12),
                 Position = UDim2.new(0, -6, 0.5, -6),
-                BackgroundColor3 = WindsurfUI.Theme.TextColor,
+                BackgroundColor3 = self.Theme.TextColor,
                 BorderSizePixel = 0,
                 Parent = SliderFill
             })
@@ -807,7 +807,7 @@ function WindsurfUI:CreateWindow(config)
             local ColorPicker = Create("Frame")({
                 Name = config.Name .. "_ColorPicker",
                 Size = UDim2.new(1, 0, 0, 40),
-                BackgroundColor3 = WindsurfUI.Theme.LightContrast,
+                BackgroundColor3 = self.Theme.LightContrast,
                 BorderSizePixel = 0,
                 Parent = tab.TabContent
             })
@@ -825,7 +825,7 @@ function WindsurfUI:CreateWindow(config)
                 Text = config.Name,
                 Font = Enum.Font.GothamSemibold,
                 TextSize = 14,
-                TextColor3 = WindsurfUI.Theme.TextColor,
+                TextColor3 = self.Theme.TextColor,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = ColorPicker
             })
