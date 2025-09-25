@@ -524,3 +524,5 @@ function Library:CreateWindow(title, subtitle)
     
     return Window
 end
+
+return Library
