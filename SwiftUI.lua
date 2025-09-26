@@ -1748,10 +1748,3 @@ end
 
 -- Return the library
 return SwiftUI
-        
-        return tab
-    end
-    
-    return window
-end
-
