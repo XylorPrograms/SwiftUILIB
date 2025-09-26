@@ -1755,5 +1755,3 @@ return SwiftUI
     return window
 end
 
--- Return the library
-return SwiftUI
