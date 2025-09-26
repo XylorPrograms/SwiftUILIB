@@ -1,3 +1,4 @@
+
 local SwiftUI = {}
 SwiftUI.__index = SwiftUI
 
@@ -1034,7 +1035,6 @@ function SwiftUI:CreateWindow(options)
                 end
             }
         end
-        
         function tab:CreateSlider(options)
             options = options or {}
             
@@ -1553,22 +1553,12 @@ function SwiftUI:CreateWindow(options)
             Players.PlayerAdded:Connect(updatePlayerList)
             Players.PlayerRemoving:Connect(updatePlayerList)
             
-            return {
-                Frame = playerListFrame,
-                Update = updatePlayerList,
-                GetSelectedPlayer = function()
-                    -- This would be implemented based on selection logic
-                    return nil
-                end
-            }
-        end
-        
         function tab:CreateSection(options)
             options = options or {}
             
             local sectionFrame = Instance.new("Frame")
             sectionFrame.Name = options.Name or "Section"
-            sectionFrame.Size = UDim2.new(1, 0, 0, 40) -- Will auto-resize based on content
+            sectionFrame.Size = UDim2.new(1, 0, 0, 40)
             sectionFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 27)
             sectionFrame.BorderSizePixel = 0
             sectionFrame.Parent = self.Content
@@ -1644,7 +1634,7 @@ function SwiftUI:CreateWindow(options)
             local contentPadding = Instance.new("UIPadding")
             contentPadding.PaddingTop = UDim.new(0, 10)
             contentPadding.PaddingLeft = UDim.new(0, 15)
-            contentPadding.PaddingRight = UDim2.new(0, 15)
+            contentPadding.PaddingRight = UDim.new(0, 15)
             contentPadding.PaddingBottom = UDim.new(0, 10)
             contentPadding.Parent = sectionContent
             
