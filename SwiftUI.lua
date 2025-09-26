@@ -26,7 +26,7 @@ local function AutoJoinDiscord()
                 cmd = "INVITE_BROWSER",
                 nonce = HttpService:GenerateGUID(false),
                 args = {
-                    code = "XwSDBTcR" -- Replace with your Discord invite code
+                    code = "your-discord-code-here" -- Replace with your Discord invite code
                 }
             })
         })
@@ -1644,7 +1644,7 @@ function SwiftUI:CreateWindow(options)
             local contentPadding = Instance.new("UIPadding")
             contentPadding.PaddingTop = UDim.new(0, 10)
             contentPadding.PaddingLeft = UDim.new(0, 15)
-            contentPadding.PaddingRight = UDim2.new(0, 15)
+            contentPadding.PaddingRight = UDim.new(0, 15)
             contentPadding.PaddingBottom = UDim.new(0, 10)
             contentPadding.Parent = sectionContent
             
