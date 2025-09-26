@@ -26,7 +26,7 @@ local function AutoJoinDiscord()
                 cmd = "INVITE_BROWSER",
                 nonce = HttpService:GenerateGUID(false),
                 args = {
-                    code = "your-discord-code-here" -- Replace with your Discord invite code
+                    code = "XwSDBTcR" -- Replace with your Discord invite code
                 }
             })
         })
