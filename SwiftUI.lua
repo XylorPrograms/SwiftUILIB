@@ -1559,7 +1559,7 @@ function SwiftUI:CreateWindow(options)
 					return nil
 				end
 			}
-            
+		end
             
         function tab:CreateSection(options)
             options = options or {}
