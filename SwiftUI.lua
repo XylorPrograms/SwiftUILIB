@@ -1552,6 +1552,14 @@ function SwiftUI:CreateWindow(options)
             -- Update when players join/leave
             Players.PlayerAdded:Connect(updatePlayerList)
             Players.PlayerRemoving:Connect(updatePlayerList)
+			retun {
+				Frame = playerListFrame,
+				Update = updatePlayerList,
+				GetSelectedPlayer = function()
+					return nil
+				end
+			}
+            
             
         function tab:CreateSection(options)
             options = options or {}
